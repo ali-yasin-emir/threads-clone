@@ -58,9 +58,13 @@ const Topbar = () => {
         <div className="flex justify-end w-1/3 max-md:hidden">
           <More />
         </div>
-        <OrganizationSwitcher appearance={{elements: {
-          organizationSwitcherTrigger: "text-white px-6"
-        }}}/>
+        <OrganizationSwitcher
+          appearance={{
+            elements: {
+              organizationSwitcherTrigger: "text-white px-6",
+            },
+          }}
+        />
         <SignedIn>
           {/* <UserButton afterSignOutUrl="/" showName /> */}
           <div className="max-md:visible max-md:flex items-center invisible max-md:absolute right-10 top-6 gap-6">

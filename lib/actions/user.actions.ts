@@ -1,99 +1,66 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { connectToDatabase } from "../database/mongoose";
+
 import User from "../database/models/user.model";
+import { connectToDatabase } from "../database/mongoose";
 import { handleError } from "../utils";
-import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs";
 
-interface Params {
-  userId: string;
-  username: string;
-  name: string;
-  bio: string;
-  image: string;
-  path: string;
-}
-
-type CreateUserParams = {
-  userId: string;
-  email: string;
-  username: string;
-  name: string;
-  image: string;
-};
-
-// CREATE
-export const createUser = async ({
-  userId,
-  email,
-  username,
-  name,
-  image,
-}: CreateUserParams): Promise<void> => {
+// CREATE or UPDATE
+export const createOrUpdateUser = async (
+  id: any,
+  first_name: any,
+  last_name: any,
+  image_url: any,
+  email_addresses: any,
+  username: any
+) => {
   try {
     await connectToDatabase();
 
-    const newUser = await User.create({
-      userId,
-      email,
-      username,
-      name,
-      image,
-    });
+    const user = await User.findOneAndUpdate(
+      { clerkId: id },
+      {
+        $set: {
+          firstName: first_name,
+          lastName: last_name,
+          profilePhoto: image_url,
+          email: email_addresses[0].email_address,
+          username: username,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    );
 
-    return JSON.parse(JSON.stringify(newUser));
+    await user.save(); // Save user to database
+
+    return user;
   } catch (error) {
     handleError(error);
   }
 };
 
 // READ
-export const getUserById = async (userId: string) => {
+export async function getUserById(id: string) {
   try {
     await connectToDatabase();
 
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ clerkId: id });
 
     if (!user) throw new Error("User not found");
-
-    return JSON.parse(JSON.stringify(user));
   } catch (error) {
     handleError(error);
   }
-};
+}
 
-export const updateUser = async ({
-  userId,
-  bio,
-  name,
-  path,
-  username,
-  image,
-}: Params): Promise<void> => {
+// DELETE
+export const deleteUser = async (id: string) => {
   try {
     await connectToDatabase();
-
-    const updatedUser = await User.findOneAndUpdate(
-      {
-        id: userId,
-      },
-      {
-        username: username.toLowerCase(),
-        name,
-        bio,
-        image,
-        onboarded: true,
-      },
-      { upset: true }
-    );
-
-    if (path === "/onboarding") {
-      revalidatePath(path);
-    }
-
-    return JSON.parse(JSON.stringify(updatedUser));
+    await User.findOneAndDelete({ clerkId: id });
   } catch (error) {
     handleError(error);
   }

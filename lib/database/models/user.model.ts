@@ -1,8 +1,20 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  id: {
+  clerkId: {
     type: String,
+    required: true,
+  },
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+  },
+  username: {
+    type: String,
+    unique: true,
     required: true,
   },
   email: {
@@ -10,17 +22,13 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  username: {
-    type: String,
-    unique: true,
-    required: true,
-  },
-  name: {
+  profilePhoto: {
     type: String,
     required: true,
   },
-  image: String,
-  bio: String,                          
+  bio: {
+    type: String,
+  },
   threads: [
     {
       type: mongoose.Schema.Types.ObjectId,

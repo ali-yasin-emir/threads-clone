@@ -1,10 +1,19 @@
 /* eslint-disable no-unused-vars */
 
-declare type UpdateUserParams = {
-  userId: string;
+// ====== USER PARAMS ====== \\
+
+declare type CreateUserParams = {
+  clerkId: string;
+  email: string;
   username: string;
-  name: string;
-  image: string;
+  firstName: string;
+  lastName: string;
+  photo: string;
+};
+
+declare type UpdateUserParams = {
+  photo: string;
+  firstName: string;
+  username: string;
   bio: string;
-  path: string;
 };

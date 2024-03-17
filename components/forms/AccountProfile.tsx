@@ -1,3 +1,5 @@
+/*
+
 "use client";
 
 import * as z from "zod";
@@ -23,8 +25,6 @@ import { useUploadThing } from "@/lib/uploadthing";
 import { updateUser } from "@/lib/actions/user.actions";
 import { usePathname, useRouter } from "next/navigation";
 import { UserValidation } from "@/lib/validations/user";
-import { currentUser } from "@clerk/nextjs";
-import { Clerk, User } from "@clerk/nextjs/server";
 
 interface Props {
   user: {
@@ -43,6 +43,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
   const pathname = usePathname();
   const { startUpload } = useUploadThing("media");
   const [files, setFiles] = useState<File[]>([]);
+
 
   const form = useForm<z.infer<typeof UserValidation>>({
     resolver: zodResolver(UserValidation),
@@ -67,17 +68,12 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
       }
     }
 
-    await updateUser({
-      name: values.name,
-      path: pathname,
-      userId: user.id,
+    await updateUser(user.id, {
+      firstName: values.name,
       username: values.username,
       bio: values.bio,
-      image: values.profile_photo,
+      photo: values.profile_photo,
     });
-
-
-
 
     if (pathname === "/profile/edit") {
       router.back();
@@ -111,7 +107,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
       fileReader.readAsDataURL(file);
     }
   };
-
+ 
   return (
     <Form {...form}>
       <form
@@ -214,3 +210,4 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
 };
 
 export default AccountProfile;
+*/
